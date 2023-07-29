@@ -51,6 +51,33 @@ services:
       - bridge-network
 
 
+
+  drupal:
+    image: drupal:latest
+    container_name: drupal
+    restart: always
+    ports:
+      - 9080:80
+    depends_on:
+      - mysql
+    environment:
+      MYSQL_DATABASE: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+
+    volumes:
+      - /var/www/private
+      - /var/www/html/modules
+      - /var/www/html/profiles
+      - /var/www/html/themes
+      - /var/www/html/sites
+    
+    networks:
+      - bridge-network
+      
+      
+
+
 networks:
   bridge-network:
     driver: bridge
