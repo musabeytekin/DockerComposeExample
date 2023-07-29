@@ -1,0 +1,56 @@
+version: '3.1'
+
+services:
+  web1:
+    image: nginx
+    depends_on:
+      - redis
+      - db
+    ports:
+      - 8080:80
+    volumes:
+      - ./web1:/usr/share/nginx/html
+      - storage:/tmp
+
+    networks:
+      - br-net
+
+  web2:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - 9080:80
+    networks:
+      - br-net
+
+  db:
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - ./db:/var/lib/mysql
+    networks:
+      - br-net
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    depends_on:
+      - db
+    networks:
+      - br-net
+
+
+networks:
+  br-net:
+    driver: bridge
+
+volumes:
+  storage:
